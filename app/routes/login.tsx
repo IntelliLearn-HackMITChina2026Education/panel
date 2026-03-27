@@ -2,7 +2,7 @@ import {School} from "lucide-react";
 import {useAuth} from "~/contexts/AuthContext";
 import {useLoaderData, useLocation, useNavigate} from "react-router";
 import {type FormEvent, useEffect, useState} from "react";
-import {useTranslation} from "react-i18next";
+import {Trans, useTranslation} from "react-i18next";
 import {Card, CardContent, CardHeader, CardTitle} from "~/components/ui/card";
 import {Field, FieldDescription, FieldGroup, FieldLabel, FieldSeparator,} from "~/components/ui/field";
 import {Tooltip, TooltipContent, TooltipTrigger} from "~/components/ui/tooltip";
@@ -141,10 +141,17 @@ export default function LoginPage() {
                         </CardContent>
                     </Card>
                     <FieldDescription className="px-6 text-center">
-                        {t('common.agree_terms', {
-                            terms: <a href="#">{t('common.terms_of_service')}</a>,
-                            privacy: <a href="#">{t('common.privacy_policy')}</a>,
-                        })}
+                        <Trans
+                            i18nKey="common.agree_terms"
+                            components={{
+                                termsLink: <a href="#" />,
+                                privacyLink: <a href="#" />,
+                            }}
+                            values={{
+                                terms: t('common.terms_of_service'),
+                                privacy: t('common.privacy_policy'),
+                            }}
+                        />
                     </FieldDescription>
                 </div>
             </div>

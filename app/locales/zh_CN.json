@@ -4,7 +4,7 @@
     "loading": "加载中...",
     "error": "错误",
     "ok": "确定",
-    "agree_terms": "点击继续，即表示您同意我们的{terms}和{privacy}。",
+    "agree_terms": "点击继续，即表示您同意我们的 <termsLink>{{terms}}</termsLink> 和 <privacyLink>{{privacy}}</privacyLink>。",
     "terms_of_service": "服务条款",
     "privacy_policy": "隐私政策"
   },
@@ -53,7 +53,8 @@
     "all_exams": "所有考试",
     "notifications": "通知",
     "logout": "退出登录",
-    "switch_class": "切换班级"
+    "switch_class": "切换班级",
+    "language": "语言"
   },
   "dashboard": {
     "home": "首页"
@@ -107,7 +108,7 @@
       "avg_score_short": "平均分",
       "score_change_short": "相较上次",
       "weak_items": "重点薄弱项",
-      "weak_student_count": "薄弱学生数: {count}",
+      "weak_student_count": "薄弱学生数: {{count}}",
       "mastery": "掌握度 {value}"
     },
     "manage": {

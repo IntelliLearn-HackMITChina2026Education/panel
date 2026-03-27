@@ -89,7 +89,7 @@
       "score_change": "Change from Last Time",
       "strengths": "Strengths",
       "weak_knowledge": "Weak Knowledge Areas",
-      "weak_desc": "The lower the mastery, the more recommended it is to prioritise explanation and practice.",
+      "weak_desc": "The lower the mastery, the more recommended it is to prioritize explanation and practice.",
       "ai_suggestions": "AI Learning Suggestions",
       "ai_suggestions_desc": "Targeted suggestions based on group knowledge performance",
       "member_performance": "Member Performance",
@@ -149,7 +149,7 @@
   },
   "subjects": {
     "Chinese": "Chinese",
-    "Math": "Mathematics",
+    "Math": "Math",
     "English": "English",
     "Physics": "Physics",
     "Chemistry": "Chemistry",

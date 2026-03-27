@@ -6,6 +6,7 @@ import {TooltipProvider} from "./components/ui/tooltip";
 import {AuthProvider} from "~/contexts/AuthContext";
 import {ThemeProvider} from "~/components/theme-provider";
 import {Toaster} from "./components/ui/sonner";
+import "./i18n"
 
 export const links: Route.LinksFunction = () => [
     {rel: "preconnect", href: "https://fonts.googleapis.com"},
