@@ -1,9 +1,12 @@
+import {useTranslation} from "react-i18next";
 import {AppSidebar} from "~/components/app-sidebar";
 import {SidebarInset, SidebarProvider, SidebarTrigger} from "~/components/ui/sidebar";
 import {Separator} from "~/components/ui/separator";
 import {Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage} from "~/components/ui/breadcrumb";
 
 export default function Dashboard() {
+    const {t} = useTranslation();
+
     return (
         <SidebarProvider>
             <AppSidebar/>
@@ -16,14 +19,13 @@ export default function Dashboard() {
                         <Breadcrumb>
                             <BreadcrumbList>
                                 <BreadcrumbItem>
-                                    <BreadcrumbPage>首页</BreadcrumbPage>
+                                    <BreadcrumbPage>{t('dashboard.home')}</BreadcrumbPage>
                                 </BreadcrumbItem>
                             </BreadcrumbList>
                         </Breadcrumb>
                     </div>
                 </header>
-                <div className="space-y-6 p-6">
-                </div>
+                <div className="space-y-6 p-6"></div>
             </SidebarInset>
         </SidebarProvider>
     );

@@ -1,4 +1,5 @@
 import {ChevronRight, type LucideIcon} from "lucide-react";
+import {useTranslation} from "react-i18next";
 
 import {Collapsible, CollapsibleContent, CollapsibleTrigger,} from "~/components/ui/collapsible";
 import {
@@ -16,19 +17,21 @@ export function NavMain({
                             items,
                         }: {
     items: {
-        title: string
-        url: string
-        icon?: LucideIcon
-        isActive?: boolean
+        title: string;
+        url: string;
+        icon?: LucideIcon;
+        isActive?: boolean;
         items?: {
-            title: string
-            url: string
-        }[]
-    }[]
+            title: string;
+            url: string;
+        }[];
+    }[];
 }) {
+    const {t} = useTranslation();
+
     return (
         <SidebarGroup>
-            <SidebarGroupLabel>班级</SidebarGroupLabel>
+            <SidebarGroupLabel>{t('sidebar.class')}</SidebarGroupLabel>
             <SidebarMenu>
                 {items.map((item) => (
                     <Collapsible

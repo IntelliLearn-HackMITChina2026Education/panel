@@ -1,6 +1,7 @@
 "use client";
 
-import {Folder, Forward, type LucideIcon, MoreHorizontal, Trash2,} from "lucide-react";
+import {Folder, Forward, type LucideIcon, MoreHorizontal, Trash2} from "lucide-react";
+import {useTranslation} from "react-i18next";
 
 import {
     DropdownMenu,
@@ -23,16 +24,17 @@ export function NavProjects({
                                 projects,
                             }: {
     projects: {
-        name: string
-        url: string
-        icon: LucideIcon
-    }[]
+        name: string;
+        url: string;
+        icon: LucideIcon;
+    }[];
 }) {
+    const {t} = useTranslation();
     const {isMobile} = useSidebar();
 
     return (
         <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-            <SidebarGroupLabel>考试</SidebarGroupLabel>
+            <SidebarGroupLabel>{t('sidebar.exams')}</SidebarGroupLabel>
             <SidebarMenu>
                 {projects.map((item) => (
                     <SidebarMenuItem key={item.name}>
@@ -56,16 +58,16 @@ export function NavProjects({
                             >
                                 <DropdownMenuItem>
                                     <Folder className="text-muted-foreground"/>
-                                    <span>查看</span>
+                                    <span>{t('sidebar.view')}</span>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem>
                                     <Forward className="text-muted-foreground"/>
-                                    <span>分享</span>
+                                    <span>{t('sidebar.share')}</span>
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator/>
                                 <DropdownMenuItem variant="destructive">
                                     <Trash2 className="text-muted-foreground"/>
-                                    <span>删除</span>
+                                    <span>{t('sidebar.delete')}</span>
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
@@ -74,7 +76,7 @@ export function NavProjects({
                 <SidebarMenuItem>
                     <SidebarMenuButton className="text-sidebar-foreground/70">
                         <MoreHorizontal className="text-sidebar-foreground/70"/>
-                        <span>所有考试</span>
+                        <span>{t('sidebar.all_exams')}</span>
                     </SidebarMenuButton>
                 </SidebarMenuItem>
             </SidebarMenu>

@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import {ChevronsUpDown} from "lucide-react";
+import {useTranslation} from "react-i18next";
 
 import {
     DropdownMenu,
@@ -11,7 +12,7 @@ import {
     DropdownMenuShortcut,
     DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
-import {SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar} from "~/components/ui/sidebar";
+import {SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar,} from "~/components/ui/sidebar";
 import type {TClass} from "~/components/app-sidebar";
 
 interface TeamSwitcherProps {
@@ -21,9 +22,9 @@ interface TeamSwitcherProps {
 }
 
 export function TeamSwitcher({classes, selectedClass, onClassChange}: TeamSwitcherProps) {
+    const {t} = useTranslation();
     const {isMobile} = useSidebar();
 
-    // 如果没有选中任何班级，则隐藏组件
     if (!selectedClass) {
         return null;
     }
@@ -54,7 +55,7 @@ export function TeamSwitcher({classes, selectedClass, onClassChange}: TeamSwitch
                         sideOffset={4}
                     >
                         <DropdownMenuLabel className="text-muted-foreground text-xs">
-                            切换班级
+                            {t('sidebar.switch_class')}
                         </DropdownMenuLabel>
                         {classes.map((team, index) => (
                             <DropdownMenuItem

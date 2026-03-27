@@ -2,7 +2,8 @@
 
 import * as React from "react";
 import {useEffect, useState} from "react";
-import {Activity, Bot, FileText, School,} from "lucide-react";
+import {Activity, Bot, FileText, School} from "lucide-react";
+import {useTranslation} from "react-i18next";
 
 import {NavMain} from "~/components/nav-main";
 import {NavProjects} from "~/components/nav-projects";
@@ -14,10 +15,10 @@ import {ExamService} from "~/services/exam-service";
 import type {Exam} from "~/types/exam";
 
 export type TClass = {
-    name: string
-    id: string
-    logo: React.ElementType
-}
+    name: string;
+    id: string;
+    logo: React.ElementType;
+};
 
 export const data = {
     classes: [
@@ -29,49 +30,36 @@ export const data = {
     ] as TClass[],
     navMain: [
         {
-            title: "试卷处理",
+            title: "paper_processing",
             url: "#",
             icon: Activity,
             isActive: true,
             items: [
-                {
-                    title: "新考试",
-                    url: "/new_exam",
-                },
-                {
-                    title: "正在处理",
-                    url: "/processing",
-                },
+                {title: "new_exam", url: "/new_exam"},
+                {title: "processing", url: "/processing"},
             ],
         },
         {
-            title: "学习小组",
+            title: "study_groups",
             url: "#",
             icon: Bot,
             isActive: true,
             items: [
-                {
-                    title: "人员管理",
-                    url: "/groups/manage",
-                },
-                {
-                    title: "趋势",
-                    url: "/groups/trend",
-                },
-                {
-                    title: "AI分析",
-                    url: "/groups/analysis",
-                },
+                {title: "group_manage", url: "/groups/manage"},
+                {title: "group_trend", url: "/groups/trend"},
+                {title: "group_analysis", url: "/groups/analysis"},
             ],
         },
     ],
 };
 
 export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
-
+    const {t} = useTranslation();
     const {user} = useAuth();
     const [exams, setExams] = useState<{ name: string; url: string; icon: any }[]>([]);
-    const [targetClass, setTargetClass] = useState<string | null>(localStorage.getItem("selectedClassId") || user?.classes[0]!!);
+    const [targetClass, setTargetClass] = useState<string | null>(
+        localStorage.getItem("selectedClassId") || user?.classes[0]!!
+    );
 
     useEffect(() => {
         const fetchExams = async () => {
@@ -82,13 +70,11 @@ export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
 
             try {
                 const latestExams: Exam[] = await ExamService.getLatestExams(targetClass);
-
-                const formattedExams = latestExams.map(exam => ({
+                const formattedExams = latestExams.map((exam) => ({
                     name: exam.name || `考试 ${exam.id}`,
                     url: `/exam/${exam.id}`,
                     icon: FileText,
                 }));
-
                 setExams(formattedExams);
             } catch (error) {
                 console.error("Failed to fetch exams:", error);
@@ -100,9 +86,8 @@ export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
     }, [user, targetClass]);
 
     const getTClassObject = () => {
-        const found = data.classes.find(tclass => tclass.id === targetClass);
-        if (found) return found;
-        return null;
+        const found = data.classes.find((tclass) => tclass.id === targetClass);
+        return found || null;
     };
 
     const handleClassChange = (tclass: TClass) => {
@@ -110,17 +95,29 @@ export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
         localStorage.setItem("selectedClassId", tclass.id);
     };
 
+    // 本地化 navMain 的标题
+    const localizedNavMain = data.navMain.map((item) => ({
+        ...item,
+        title: t(`sidebar.${item.title}`),
+        items: item.items.map((sub) => ({
+            ...sub,
+            title: t(`sidebar.${sub.title}`),
+        })),
+    }));
+
     return (
         <Sidebar collapsible="icon" {...props}>
             <SidebarHeader>
-                {targetClass && <TeamSwitcher
-                    classes={data.classes}
-                    selectedClass={getTClassObject()}
-                    onClassChange={handleClassChange}
-                />}
+                {targetClass && (
+                    <TeamSwitcher
+                        classes={data.classes}
+                        selectedClass={getTClassObject()}
+                        onClassChange={handleClassChange}
+                    />
+                )}
             </SidebarHeader>
             <SidebarContent>
-                <NavMain items={data.navMain}/>
+                <NavMain items={localizedNavMain}/>
                 {user && <NavProjects projects={exams}/>}
             </SidebarContent>
             <SidebarFooter>

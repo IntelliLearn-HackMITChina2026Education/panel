@@ -1,7 +1,8 @@
 import * as React from "react";
 import {useMemo, useState} from "react";
+import {useTranslation} from "react-i18next";
 import {AppSidebar} from "~/components/app-sidebar";
-import {SidebarInset, SidebarProvider, SidebarTrigger,} from "~/components/ui/sidebar";
+import {SidebarInset, SidebarProvider, SidebarTrigger} from "~/components/ui/sidebar";
 import {Separator} from "~/components/ui/separator";
 import {
     Breadcrumb,
@@ -138,19 +139,20 @@ export function clientLoader({request}: Route.ClientLoaderArgs): GroupAnalysisLo
 }
 
 function TrendBadge({trend}: { trend: "up" | "down" | "stable" }) {
+    const {t} = useTranslation();
     const map = {
         up: {
-            text: "上升",
+            text: t('groups.analysis.trend_up'),
             className:
                 "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950 dark:text-emerald-300",
         },
         down: {
-            text: "下降",
+            text: t('groups.analysis.trend_down'),
             className:
                 "border-red-200 bg-red-50 text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300",
         },
         stable: {
-            text: "稳定",
+            text: t('groups.analysis.trend_stable'),
             className:
                 "border-slate-200 bg-slate-50 text-slate-700 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300",
         },
@@ -161,11 +163,10 @@ function TrendBadge({trend}: { trend: "up" | "down" | "stable" }) {
 }
 
 export default function Analysis({loaderData}: Route.ComponentProps) {
+    const {t} = useTranslation();
     const {exams, selectedExamId, groups} = loaderData;
     const [currentExamId, setCurrentExamId] = useState(selectedExamId);
-    const [activeGroupId, setActiveGroupId] = useState<string>(
-        String(groups[0]?.id ?? "")
-    );
+    const [activeGroupId, setActiveGroupId] = useState<string>(String(groups[0]?.id ?? ""));
 
     const selectedExam = useMemo(
         () => exams.find((exam) => exam.id === currentExamId) ?? exams[0],
@@ -203,15 +204,12 @@ export default function Analysis({loaderData}: Route.ComponentProps) {
                 <header className="flex h-16 shrink-0 items-center gap-2 border-b bg-background/80 backdrop-blur">
                     <div className="flex items-center gap-2 px-4">
                         <SidebarTrigger className="-ml-1"/>
-                        <Separator
-                            orientation="vertical"
-                            className="mr-2 data-[orientation=vertical]:h-4"
-                        />
+                        <Separator orientation="vertical" className="mr-2 data-[orientation=vertical]:h-4"/>
                         <Breadcrumb>
                             <BreadcrumbList>
-                                <BreadcrumbItem>学习小组</BreadcrumbItem>
+                                <BreadcrumbItem>{t('sidebar.study_groups')}</BreadcrumbItem>
                                 <BreadcrumbSeparator/>
-                                <BreadcrumbLink href="/groups/analysis">AI分析</BreadcrumbLink>
+                                <BreadcrumbLink href="/groups/analysis">{t('sidebar.group_analysis')}</BreadcrumbLink>
                             </BreadcrumbList>
                         </Breadcrumb>
                     </div>
@@ -223,18 +221,16 @@ export default function Analysis({loaderData}: Route.ComponentProps) {
                         <div className="space-y-1">
                             <div className="flex items-center gap-2">
                                 <Sparkles className="h-5 w-5"/>
-                                <h1 className="text-2xl font-bold tracking-tight">学习小组 AI 分析</h1>
+                                <h1 className="text-2xl font-bold tracking-tight">{t('groups.analysis.title')}</h1>
                             </div>
-                            <p className="text-sm text-muted-foreground">
-                                查看各学习小组在当前考试中的知识点掌握情况、成员表现与针对性建议。
-                            </p>
+                            <p className="text-sm text-muted-foreground">{t('groups.analysis.description')}</p>
                         </div>
 
                         <div className="flex w-full flex-col gap-3 md:w-auto md:min-w-[320px]">
-                            <label className="text-sm font-medium">选择考试</label>
+                            <label className="text-sm font-medium">{t('groups.analysis.select_exam')}</label>
                             <Select value={currentExamId} onValueChange={setCurrentExamId}>
                                 <SelectTrigger>
-                                    <SelectValue placeholder="请选择考试"/>
+                                    <SelectValue placeholder={t('groups.analysis.select_exam_placeholder')}/>
                                 </SelectTrigger>
                                 <SelectContent>
                                     {exams.map((exam) => (
@@ -246,8 +242,8 @@ export default function Analysis({loaderData}: Route.ComponentProps) {
                             </Select>
                             {selectedExam ? (
                                 <p className="text-xs text-muted-foreground">
-                                    当前：{selectedExam.name} / {selectedExam.subject} /{" "}
-                                    {selectedExam.className} / {selectedExam.date}
+                                    {t('groups.analysis.current_exam')}
+                                    {selectedExam.name} / {selectedExam.subject} / {selectedExam.className} / {selectedExam.date}
                                 </p>
                             ) : null}
                         </div>
@@ -256,28 +252,25 @@ export default function Analysis({loaderData}: Route.ComponentProps) {
                     <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
                         <Card className="rounded-2xl">
                             <CardHeader className="pb-2">
-                                <CardDescription>覆盖学生数</CardDescription>
+                                <CardDescription>{t('groups.analysis.student_count')}</CardDescription>
                                 <CardTitle className="text-3xl">{overview.totalStudents}</CardTitle>
                             </CardHeader>
                         </Card>
-
                         <Card className="rounded-2xl">
                             <CardHeader className="pb-2">
-                                <CardDescription>小组平均分</CardDescription>
+                                <CardDescription>{t('groups.analysis.group_avg')}</CardDescription>
                                 <CardTitle className="text-3xl">{overview.avgScore}</CardTitle>
                             </CardHeader>
                         </Card>
-
                         <Card className="rounded-2xl">
                             <CardHeader className="pb-2">
-                                <CardDescription>记录的薄弱知识点</CardDescription>
+                                <CardDescription>{t('groups.analysis.weak_points')}</CardDescription>
                                 <CardTitle className="text-3xl">{overview.weakPointCount}</CardTitle>
                             </CardHeader>
                         </Card>
-
                         <Card className="rounded-2xl">
                             <CardHeader className="pb-2">
-                                <CardDescription>成绩下滑小组</CardDescription>
+                                <CardDescription>{t('groups.analysis.down_groups')}</CardDescription>
                                 <CardTitle className="text-3xl">{overview.downGroups}</CardTitle>
                             </CardHeader>
                         </Card>
@@ -299,32 +292,29 @@ export default function Analysis({loaderData}: Route.ComponentProps) {
                         </div>
 
                         {groups.map((group) => (
-                            <TabsContent
-                                key={group.id}
-                                value={String(group.id)}
-                                className="mt-6 space-y-6"
-                            >
+                            <TabsContent key={group.id} value={String(group.id)} className="mt-6 space-y-6">
                                 <div className="grid gap-4 xl:grid-cols-[1.2fr_0.8fr]">
                                     <Card className="rounded-2xl">
                                         <CardHeader>
                                             <CardTitle className="flex items-center gap-2">
                                                 <Users className="h-5 w-5"/>
-                                                {group.name} 小组概览
+                                                {t('groups.analysis.group_overview')}
                                             </CardTitle>
                                         </CardHeader>
                                         <CardContent className="grid gap-4 sm:grid-cols-3">
                                             <div className="rounded-xl border p-4">
-                                                <div className="text-sm text-muted-foreground">小组人数</div>
-                                                <div className="mt-2 text-2xl font-bold">
-                                                    {group.studentCount}
-                                                </div>
+                                                <div
+                                                    className="text-sm text-muted-foreground">{t('groups.analysis.group_members')}</div>
+                                                <div className="mt-2 text-2xl font-bold">{group.studentCount}</div>
                                             </div>
                                             <div className="rounded-xl border p-4">
-                                                <div className="text-sm text-muted-foreground">平均分</div>
+                                                <div
+                                                    className="text-sm text-muted-foreground">{t('groups.analysis.avg_score')}</div>
                                                 <div className="mt-2 text-2xl font-bold">{group.avgScore}</div>
                                             </div>
                                             <div className="rounded-xl border p-4">
-                                                <div className="text-sm text-muted-foreground">相较上次</div>
+                                                <div
+                                                    className="text-sm text-muted-foreground">{t('groups.analysis.score_change')}</div>
                                                 <div
                                                     className={`mt-2 text-2xl font-bold ${
                                                         group.scoreChange > 0
@@ -343,15 +333,12 @@ export default function Analysis({loaderData}: Route.ComponentProps) {
 
                                     <Card className="rounded-2xl">
                                         <CardHeader>
-                                            <CardTitle>优势表现</CardTitle>
+                                            <CardTitle>{t('groups.analysis.strengths')}</CardTitle>
                                         </CardHeader>
                                         <CardContent className="flex flex-wrap gap-2">
                                             {group.strengths.map((item) => (
-                                                <Badge
-                                                    key={item}
-                                                    variant="secondary"
-                                                    className="rounded-full px-3 py-1"
-                                                >
+                                                <Badge key={item} variant="secondary"
+                                                       className="rounded-full px-3 py-1">
                                                     {item}
                                                 </Badge>
                                             ))}
@@ -362,10 +349,8 @@ export default function Analysis({loaderData}: Route.ComponentProps) {
                                 <div className="grid gap-4 xl:grid-cols-[1fr_1fr]">
                                     <Card className="rounded-2xl">
                                         <CardHeader>
-                                            <CardTitle>薄弱知识点</CardTitle>
-                                            <CardDescription>
-                                                掌握度越低，越建议优先安排讲解与练习
-                                            </CardDescription>
+                                            <CardTitle>{t('groups.analysis.weak_knowledge')}</CardTitle>
+                                            <CardDescription>{t('groups.analysis.weak_desc')}</CardDescription>
                                         </CardHeader>
                                         <CardContent className="space-y-5">
                                             {group.weakKnowledgePoints.map((point) => (
@@ -374,10 +359,12 @@ export default function Analysis({loaderData}: Route.ComponentProps) {
                                                         <div>
                                                             <div className="font-medium">{point.name}</div>
                                                             <div className="text-xs text-muted-foreground">
-                                                                薄弱学生数：{point.weakCount}
+                                                                {t('groups.analysis.weak_student_count', {count: point.weakCount})}
                                                             </div>
                                                         </div>
-                                                        <Badge variant="outline">掌握度 {point.mastery}%</Badge>
+                                                        <Badge variant="outline">
+                                                            {t('groups.analysis.mastery', {value: point.mastery})}
+                                                        </Badge>
                                                     </div>
                                                     <Progress value={point.mastery}/>
                                                 </div>
@@ -387,22 +374,17 @@ export default function Analysis({loaderData}: Route.ComponentProps) {
 
                                     <Card className="rounded-2xl">
                                         <CardHeader>
-                                            <CardTitle>AI 学习建议</CardTitle>
-                                            <CardDescription>
-                                                根据小组知识点表现生成的针对性建议
-                                            </CardDescription>
+                                            <CardTitle>{t('groups.analysis.ai_suggestions')}</CardTitle>
+                                            <CardDescription>{t('groups.analysis.ai_suggestions_desc')}</CardDescription>
                                         </CardHeader>
                                         <CardContent>
                                             <ul className="space-y-3 text-sm leading-6 text-foreground">
                                                 {group.suggestions.map((item, index) => (
-                                                    <li
-                                                        key={item}
-                                                        className="rounded-xl border bg-muted/30 p-3"
-                                                    >
-                                                        <span
-                                                            className="mr-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
-                                                          {index + 1}
-                                                        </span>
+                                                    <li key={item} className="rounded-xl border bg-muted/30 p-3">
+                            <span
+                                className="mr-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
+                              {index + 1}
+                            </span>
                                                         {item}
                                                     </li>
                                                 ))}
@@ -413,27 +395,23 @@ export default function Analysis({loaderData}: Route.ComponentProps) {
 
                                 <Card className="rounded-2xl">
                                     <CardHeader>
-                                        <CardTitle>成员表现</CardTitle>
-                                        <CardDescription>
-                                            便于教师快速了解组内个体差异与变化趋势
-                                        </CardDescription>
+                                        <CardTitle>{t('groups.analysis.member_performance')}</CardTitle>
+                                        <CardDescription>{t('groups.analysis.member_performance_desc')}</CardDescription>
                                     </CardHeader>
                                     <CardContent>
                                         <ScrollArea className="w-full">
                                             <Table>
                                                 <TableHeader>
                                                     <TableRow>
-                                                        <TableHead>学生</TableHead>
-                                                        <TableHead>本次成绩</TableHead>
-                                                        <TableHead>趋势</TableHead>
+                                                        <TableHead>{t('groups.analysis.student')}</TableHead>
+                                                        <TableHead>{t('groups.analysis.score')}</TableHead>
+                                                        <TableHead>{t('groups.analysis.trend')}</TableHead>
                                                     </TableRow>
                                                 </TableHeader>
                                                 <TableBody>
                                                     {group.members.map((member) => (
                                                         <TableRow key={member.id}>
-                                                            <TableCell className="font-medium">
-                                                                {member.name}
-                                                            </TableCell>
+                                                            <TableCell className="font-medium">{member.name}</TableCell>
                                                             <TableCell>{member.score}</TableCell>
                                                             <TableCell>
                                                                 <TrendBadge trend={member.trend}/>
@@ -452,22 +430,20 @@ export default function Analysis({loaderData}: Route.ComponentProps) {
                     <Card className="rounded-2xl">
                         <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                             <div>
-                                <CardTitle>小组横向对比</CardTitle>
-                                <CardDescription>
-                                    用于比较不同小组的平均分、变化情况与重点问题
-                                </CardDescription>
+                                <CardTitle>{t('groups.analysis.group_comparison')}</CardTitle>
+                                <CardDescription>{t('groups.analysis.group_comparison_desc')}</CardDescription>
                             </div>
-                            <Button variant="outline">导出分析</Button>
+                            <Button variant="outline">{t('groups.analysis.export')}</Button>
                         </CardHeader>
                         <CardContent>
                             <Table>
                                 <TableHeader>
                                     <TableRow>
-                                        <TableHead>小组</TableHead>
-                                        <TableHead>人数</TableHead>
-                                        <TableHead>平均分</TableHead>
-                                        <TableHead>相较上次</TableHead>
-                                        <TableHead>重点薄弱项</TableHead>
+                                        <TableHead>{t('groups.analysis.group')}</TableHead>
+                                        <TableHead>{t('groups.analysis.student_count_short')}</TableHead>
+                                        <TableHead>{t('groups.analysis.avg_score_short')}</TableHead>
+                                        <TableHead>{t('groups.analysis.score_change_short')}</TableHead>
+                                        <TableHead>{t('groups.analysis.weak_items')}</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -489,8 +465,7 @@ export default function Analysis({loaderData}: Route.ComponentProps) {
                                                 {group.scoreChange}
                                             </TableCell>
                                             <TableCell>
-                                                {group.weakKnowledgePoints
-                                                    .slice(0, 2)
+                                                {group.weakKnowledgePoints.slice(0, 2)
                                                     .map((item) => item.name)
                                                     .join(" / ")}
                                             </TableCell>

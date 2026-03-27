@@ -1,6 +1,6 @@
-import {Bell, ChevronsUpDown, LogOut,} from "lucide-react";
-
-import {Avatar, AvatarFallback, AvatarImage,} from "~/components/ui/avatar";
+import {Bell, ChevronsUpDown, LogOut} from "lucide-react";
+import {useTranslation} from "react-i18next";
+import {Avatar, AvatarFallback, AvatarImage} from "~/components/ui/avatar";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -13,6 +13,7 @@ import {useNavigate} from "react-router";
 import type {User} from "~/types/auth";
 
 export function NavUser({user}: { user: User }) {
+    const {t} = useTranslation();
     const {isMobile} = useSidebar();
     const navigate = useNavigate();
 
@@ -45,13 +46,13 @@ export function NavUser({user}: { user: User }) {
                         <DropdownMenuGroup>
                             <DropdownMenuItem>
                                 <Bell/>
-                                通知
+                                {t('sidebar.notifications')}
                             </DropdownMenuItem>
                         </DropdownMenuGroup>
                         <button className="w-full" onClick={() => navigate("/logout")}>
                             <DropdownMenuItem>
                                 <LogOut/>
-                                退出登录
+                                {t('sidebar.logout')}
                             </DropdownMenuItem>
                         </button>
                     </DropdownMenuContent>

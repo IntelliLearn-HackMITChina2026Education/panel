@@ -1,8 +1,9 @@
 import * as React from "react";
 import {useState} from "react";
 import {useNavigate} from "react-router";
+import {useTranslation} from "react-i18next";
 import {AppSidebar} from "~/components/app-sidebar";
-import {SidebarInset, SidebarProvider, SidebarTrigger,} from "~/components/ui/sidebar";
+import {SidebarInset, SidebarProvider, SidebarTrigger} from "~/components/ui/sidebar";
 import {Separator} from "~/components/ui/separator";
 import {
     Breadcrumb,
@@ -60,48 +61,37 @@ export function clientLoader({request}: Route.ClientLoaderArgs): GroupTrendLoade
     return {exams, groups};
 }
 
-/* ================= 页面 ================= */
-
 export default function GroupsTrend({loaderData}: Route.ComponentProps) {
+    const {t} = useTranslation();
     const navigate = useNavigate();
     const {exams, groups} = loaderData;
-
     const [selectedExam, setSelectedExam] = useState(exams[exams.length - 1]);
-
     const maxScore = 100;
 
     return (
         <SidebarProvider>
             <AppSidebar/>
             <SidebarInset>
-                {/* header */}
                 <header className="flex h-16 items-center gap-2 border-b">
                     <div className="flex items-center gap-2 px-4">
                         <SidebarTrigger/>
                         <Separator orientation="vertical" className="h-4"/>
                         <Breadcrumb>
                             <BreadcrumbList>
-                                <BreadcrumbItem>学习小组</BreadcrumbItem>
+                                <BreadcrumbItem>{t('sidebar.study_groups')}</BreadcrumbItem>
                                 <BreadcrumbSeparator/>
-                                <BreadcrumbLink href="/groups/trend">
-                                    趋势
-                                </BreadcrumbLink>
+                                <BreadcrumbLink href="/groups/trend">{t('sidebar.group_trend')}</BreadcrumbLink>
                             </BreadcrumbList>
                         </Breadcrumb>
                     </div>
                 </header>
 
-                {/* content */}
                 <div className="flex flex-1 flex-col gap-6 p-6">
-                    {/* 顶部 */}
                     <div className="flex items-center justify-between">
                         <div>
-                            <h1 className="text-2xl font-bold">小组成绩趋势</h1>
-                            <p className="text-sm text-muted-foreground">
-                                查看不同小组成绩变化情况
-                            </p>
+                            <h1 className="text-2xl font-bold">{t('groups.trend.title')}</h1>
+                            <p className="text-sm text-muted-foreground">{t('groups.trend.description')}</p>
                         </div>
-
                         <Select value={selectedExam} onValueChange={setSelectedExam}>
                             <SelectTrigger className="w-50">
                                 <SelectValue/>
@@ -118,9 +108,8 @@ export default function GroupsTrend({loaderData}: Route.ComponentProps) {
 
                     <Card className="rounded-2xl">
                         <CardHeader>
-                            <CardTitle>小组对比</CardTitle>
+                            <CardTitle>{t('groups.trend.group_comparison')}</CardTitle>
                         </CardHeader>
-
                         <CardContent>
                             <div className="space-y-4">
                                 {groups.map((group) => (
@@ -129,14 +118,13 @@ export default function GroupsTrend({loaderData}: Route.ComponentProps) {
                                         className="flex items-center justify-between border rounded-lg p-3"
                                     >
                                         <div className="font-medium">{group.name}</div>
-
                                         <div className="flex items-center gap-4">
-                                            <span>平均分：{group.currentAvg}</span>
+                      <span>
+                        {t('groups.trend.avg_score_label')} {group.currentAvg}
+                      </span>
                                             <span
                                                 className={
-                                                    group.change > 0
-                                                        ? "text-emerald-600"
-                                                        : "text-red-600"
+                                                    group.change > 0 ? "text-emerald-600" : "text-red-600"
                                                 }
                                             >
                         {group.change > 0 ? "↑" : "↓"} {group.change}
@@ -158,21 +146,16 @@ export default function GroupsTrend({loaderData}: Route.ComponentProps) {
                                         {group.name}
                                         <Badge
                                             variant="outline"
-                                            className={
-                                                group.change > 0
-                                                    ? "text-emerald-600"
-                                                    : "text-red-600"
-                                            }
+                                            className={group.change > 0 ? "text-emerald-600" : "text-red-600"}
                                         >
                                             {group.change > 0 ? "+" : ""}
                                             {group.change}
                                         </Badge>
                                     </CardTitle>
                                     <CardDescription>
-                                        当前平均分：{group.currentAvg}
+                                        {t('groups.trend.current_avg')} {group.currentAvg}
                                     </CardDescription>
                                 </CardHeader>
-
                                 <CardContent className="space-y-4">
                                     {group.trend.map((item) => (
                                         <div key={item.exam} className="space-y-1">
@@ -180,9 +163,7 @@ export default function GroupsTrend({loaderData}: Route.ComponentProps) {
                                                 <span>{item.exam}</span>
                                                 <span>{item.avgScore}</span>
                                             </div>
-                                            <Progress
-                                                value={(item.avgScore / maxScore) * 100}
-                                            />
+                                            <Progress value={(item.avgScore / maxScore) * 100}/>
                                         </div>
                                     ))}
                                 </CardContent>
