@@ -13,9 +13,12 @@ export default function ProcessingItem({
                                        }: {
     name: string;
     desc?: string;
-    stat: "processing" | "pending";
+    stat: "processing" | "pending" | "completed" | "failed";
     link?: string;
 }) {
+
+    if (stat == "completed" || stat === "failed") return null;
+
     const {t} = useTranslation();
     const navigate = useNavigate();
 

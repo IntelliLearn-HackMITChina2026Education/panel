@@ -109,7 +109,7 @@
       "score_change_short": "相较上次",
       "weak_items": "重点薄弱项",
       "weak_student_count": "薄弱学生数: {{count}}",
-      "mastery": "掌握度 {{value}}"
+      "mastery": "掌握度 {{value}}%"
     },
     "manage": {
       "groups": "学习小组",

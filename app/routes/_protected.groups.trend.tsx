@@ -17,48 +17,18 @@ import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from "~/
 import {Badge} from "~/components/ui/badge";
 import {Progress} from "~/components/ui/progress";
 import type {Route} from "../../.react-router/types/app/routes/+types/_protected.groups.trend";
-import type {GroupTrend, GroupTrendLoaderData} from "~/types/exam";
+import {GroupsService} from "~/services/groups-service";
 
-export function clientLoader({request}: Route.ClientLoaderArgs): GroupTrendLoaderData {
-    const exams = ["1月考试", "2月考试", "3月考试"];
-
-    const groups: GroupTrend[] = [
-        {
-            id: 1,
-            name: "启航组",
-            currentAvg: 84,
-            change: +6,
-            trend: [
-                {exam: "1月考试", avgScore: 72},
-                {exam: "2月考试", avgScore: 78},
-                {exam: "3月考试", avgScore: 84},
-            ],
-        },
-        {
-            id: 2,
-            name: "卓越组",
-            currentAvg: 91,
-            change: +3,
-            trend: [
-                {exam: "1月考试", avgScore: 86},
-                {exam: "2月考试", avgScore: 88},
-                {exam: "3月考试", avgScore: 91},
-            ],
-        },
-        {
-            id: 3,
-            name: "攻坚组",
-            currentAvg: 72,
-            change: -2,
-            trend: [
-                {exam: "1月考试", avgScore: 75},
-                {exam: "2月考试", avgScore: 74},
-                {exam: "3月考试", avgScore: 72},
-            ],
-        },
-    ];
-
-    return {exams, groups};
+export async function clientLoader({request}: Route.ClientLoaderArgs) {
+    const exams = await GroupsService.getExams(); // 获取考试列表用于下拉
+    const groups = await GroupsService.getGroups();
+    const groupsWithTrend = await Promise.all(
+        groups.map(async (group) => {
+            const trend = await GroupsService.getGroupTrend(group.id);
+            return {...group, ...trend};
+        })
+    );
+    return {exams: exams.map(e => e.name), groups: groupsWithTrend};
 }
 
 export default function GroupsTrend({loaderData}: Route.ComponentProps) {

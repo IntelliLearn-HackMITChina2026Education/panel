@@ -16,13 +16,10 @@ import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger,} from "
 import type {Route} from "../../.react-router/types/app/routes/+types/_protected.groups.manage";
 import {ExamService} from "~/services/exam-service";
 import type {Group, Student} from "~/types/exam";
+import {GroupsService} from "~/services/groups-service";
 
-export function clientLoader({request}: Route.ClientLoaderArgs) {
-    return [
-        {id: 1, name: "启航组", students: [101, 102, 103, 104, 105, 106]},
-        {id: 2, name: "卓越组", students: [107, 108, 109, 110, 111]},
-        {id: 3, name: "卓越组", students: [112, 113, 114, 115, 116, 117, 118]},
-    ] as Group[];
+export async function clientLoader() {
+    return await GroupsService.getGroups();
 }
 
 export default function GroupsManage({loaderData}: Route.ComponentProps) {
@@ -36,7 +33,7 @@ export default function GroupsManage({loaderData}: Route.ComponentProps) {
     const [groupState, setGroupState] = useState<Group[]>(groups);
     const [studentMap, setStudentMap] = useState<Map<string, Student>>(new Map());
 
-    const currentGroup = groupState.find((g) => String(g.id) === groupId);
+    const currentGroup = groupState.find((g) => String(g.id) == groupId);
 
     const [open, setOpen] = useState(false);
     const [keyword, setKeyword] = useState("");
@@ -44,42 +41,41 @@ export default function GroupsManage({loaderData}: Route.ComponentProps) {
 
     useEffect(() => {
         const timer = setTimeout(() => {
-            ExamService.searchStudents(keyword).then(setResults);
+            GroupsService.searchStudents(keyword).then(setResults);
         }, 300);
         return () => clearTimeout(timer);
     }, [keyword]);
 
     useEffect(() => {
+        console.log(currentGroup);
         if (!currentGroup?.students?.length) return;
-        ExamService.fetchStudentsByIds(currentGroup.students).then((data) => {
+        GroupsService.fetchStudentsByIds(currentGroup.students).then((data) => {
             const map = new Map<string, Student>();
             data.forEach((s) => map.set(s.id.toString(), s));
             setStudentMap(map);
         });
     }, [currentGroup]);
 
-    const handleAdd = (student: Student) => {
+    const handleAdd = async (student: Student) => {
+        setOpen(false);
         if (!currentGroup) return;
-        if (currentGroup.students?.includes(student.id)) return;
-
+        await GroupsService.addMember(currentGroup.id, student.id);
+        // 更新本地状态
         setGroupState((prev) =>
             prev.map((g) =>
-                String(g.id) === groupId
+                g.id === currentGroup.id
                     ? {...g, students: [...(g.students || []), student.id]}
                     : g
             )
         );
-
-        setOpen(false);
-        setKeyword("");
-        setResults([]);
     };
 
-    const handleRemove = (id: number) => {
+    const handleRemove = async (id: number) => {
         if (!currentGroup) return;
+        await GroupsService.removeMember(currentGroup.id, id);
         setGroupState((prev) =>
             prev.map((g) =>
-                String(g.id) === groupId
+                g.id === currentGroup.id
                     ? {...g, students: g.students.filter((s) => s !== id)}
                     : g
             )

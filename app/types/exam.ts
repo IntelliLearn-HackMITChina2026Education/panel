@@ -1,7 +1,7 @@
 import type {UnsignedInt32} from "~/types/uint32";
 
 export interface Exam {
-    id: UnsignedInt32;
+    id: number;
     name: string;
     subject: string;
     classes: string[];
@@ -12,6 +12,7 @@ export interface Exam {
 export interface Student {
     id: number;
     name: string;
+    className: string;
 }
 
 export interface Group {
@@ -53,12 +54,6 @@ export interface ExamOption {
     date: string;
 }
 
-export interface GroupAnalysisLoaderData {
-    exams: ExamOption[];
-    selectedExamId: string;
-    groups: GroupAnalysis[];
-}
-
 export interface TrendPoint {
     exam: string;
     avgScore: number;
@@ -70,9 +65,4 @@ export interface GroupTrend {
     trend: TrendPoint[];
     currentAvg: number;
     change: number;
-}
-
-export interface GroupTrendLoaderData {
-    exams: string[];
-    groups: GroupTrend[];
 }

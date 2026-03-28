@@ -109,7 +109,7 @@
       "score_change_short": "Change from Last",
       "weak_items": "Key Weaknesses",
       "weak_student_count": "Students with Weakness: {{count}}",
-      "mastery": "Mastery {{value}}"
+      "mastery": "Mastery {{value}}%"
     },
     "manage": {
       "groups": "Study Groups",

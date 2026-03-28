@@ -16,6 +16,8 @@ import {
 import type {Route} from "../../.react-router/types/app/routes/+types/_protected.processing";
 import {ExamService} from "~/services/exam-service";
 import {UnsignedInt32} from "~/types/uint32";
+import {TasksService} from "~/services/tasks-service";
+import type {ActiveExam, ExamTask} from "~/types/tasks";
 
 export function clientLoader({request}: Route.ClientLoaderArgs) {
     const url = new URL(request.url);
@@ -33,28 +35,42 @@ export default function Processing({loaderData}: Route.ComponentProps) {
     const from = searchParams.get("from");
     const exam = loaderData;
 
-    const [processing, setProcessing] = useState<{
-        name: string;
-        desc: string;
-        status: "processing" | "pending";
-    }[]>([
-        {name: "test", desc: "test", status: "processing"},
-        {name: "test", desc: "test", status: "pending"},
-    ]);
+    const [activeExams, setActiveExams] = useState<ActiveExam[]>([]);
+    const [examTasks, setExamTasks] = useState<ExamTask[]>([]);
+    const [loadingExams, setLoadingExams] = useState(true);
+    const [loadingTasks, setLoadingTasks] = useState(false);
 
-    const [processingExam, setProcessingExam] = useState<{
-        name: string;
-        id: number;
-        status: "processing" | "pending";
-    }[]>([
-        {name: "物理2026学年第五次周测", id: 3, status: "processing"},
-    ]);
-
+    // 获取所有活跃的考试
     useEffect(() => {
-        if (processing.length === 0 && from) {
-            navigate(`/exam/${from}`);
+        TasksService.getActiveExams()
+            .then(setActiveExams)
+            .catch(console.error)
+            .finally(() => setLoadingExams(false));
+    }, []);
+
+    // 当选中某个考试时，获取其任务列表
+    useEffect(() => {
+        if (from) {
+            const examId = parseInt(from);
+            setLoadingTasks(true);
+            TasksService.getExamTasks(examId)
+                .then(setExamTasks)
+                .catch(console.error)
+                .finally(() => setLoadingTasks(false));
+        } else {
+            setExamTasks([]);
         }
-    }, [processing, from, navigate]);
+    }, [from]);
+
+    // 当某个考试的所有任务都完成（status 不是 processing/pending）时，自动跳转
+    useEffect(() => {
+        if (examTasks.length > 0 && from && !loadingTasks) {
+            const allFinished = examTasks.every(task => task.status === "completed" || task.status === "failed");
+            if (allFinished) {
+                navigate(`/exam/${from}`);
+            }
+        }
+    }, [examTasks, from, navigate, loadingTasks]);
 
     return (
         <SidebarProvider>
@@ -86,16 +102,20 @@ export default function Processing({loaderData}: Route.ComponentProps) {
                                     <CardTitle>{t('processing.all_processing')}</CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <div className="space-y-4">
-                                        {processingExam.map((it) => (
-                                            <ProcessingItem
-                                                key={it.name}
-                                                name={it.name}
-                                                link={`/processing?from=${it.id}`}
-                                                stat={it.status}
-                                            />
-                                        ))}
-                                    </div>
+                                    {loadingExams ? (
+                                        <p>加载中...</p>
+                                    ) : (
+                                        <div className="space-y-4">
+                                            {activeExams.map((it) => (
+                                                <ProcessingItem
+                                                    key={it.id}
+                                                    name={it.name}
+                                                    link={`/processing?from=${it.id}`}
+                                                    stat={it.status}
+                                                />
+                                            ))}
+                                        </div>
+                                    )}
                                 </CardContent>
                             </Card>
                         ) : (
@@ -106,12 +126,20 @@ export default function Processing({loaderData}: Route.ComponentProps) {
                                     </CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <div className="space-y-4">
-                                        {processing.map((it) => (
-                                            <ProcessingItem key={it.name} name={it.name} desc={it.desc}
-                                                            stat={it.status}/>
-                                        ))}
-                                    </div>
+                                    {loadingTasks ? (
+                                        <p>加载中...</p>
+                                    ) : (
+                                        <div className="space-y-4">
+                                            {examTasks.map((it, idx) => (
+                                                <ProcessingItem
+                                                    key={idx}
+                                                    name={it.name}
+                                                    desc={it.desc}
+                                                    stat={it.status}
+                                                />
+                                            ))}
+                                        </div>
+                                    )}
                                 </CardContent>
                             </Card>
                         )}
