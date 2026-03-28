@@ -33,7 +33,7 @@
     "confirm_password": "确认密码",
     "password_hint": "至少八个字符长。",
     "button": "注册",
-    "have_account": "已经有账户? {link}",
+    "have_account": "已经有账户? {{link}}",
     "disabled_error": "注册服务未启用",
     "login_link": "登录"
   },
@@ -109,7 +109,7 @@
       "score_change_short": "相较上次",
       "weak_items": "重点薄弱项",
       "weak_student_count": "薄弱学生数: {{count}}",
-      "mastery": "掌握度 {value}"
+      "mastery": "掌握度 {{value}}"
     },
     "manage": {
       "groups": "学习小组",

@@ -30,24 +30,17 @@ export function clientLoader({request}: Route.ClientLoaderArgs): GroupAnalysisLo
     const exams: ExamOption[] = [
         {
             id: "exam-2026-03",
-            name: "2026年3月月考",
-            subject: "数学",
-            className: "高一（1）班",
+            name: "物理2026年期中考试",
+            subject: "物理",
+            className: "高二（7）班",
             date: "2026-03-20",
         },
         {
-            id: "exam-2026-02",
-            name: "2026年2月阶段测验",
-            subject: "数学",
-            className: "高一（1）班",
-            date: "2026-02-18",
-        },
-        {
-            id: "exam-2026-01",
-            name: "2026年1月期初检测",
-            subject: "数学",
-            className: "高一（1）班",
-            date: "2026-01-10",
+            id: "exam-2026-03-01",
+            name: "生物2026年期中考试",
+            subject: "生物",
+            className: "高二（7）班",
+            date: "2026-03-20",
         },
     ];
 
@@ -235,17 +228,11 @@ export default function Analysis({loaderData}: Route.ComponentProps) {
                                 <SelectContent>
                                     {exams.map((exam) => (
                                         <SelectItem key={exam.id} value={exam.id}>
-                                            {exam.name} · {exam.subject} · {exam.className}
+                                            {exam.name}
                                         </SelectItem>
                                     ))}
                                 </SelectContent>
                             </Select>
-                            {selectedExam ? (
-                                <p className="text-xs text-muted-foreground">
-                                    {t('groups.analysis.current_exam')}
-                                    {selectedExam.name} / {selectedExam.subject} / {selectedExam.className} / {selectedExam.date}
-                                </p>
-                            ) : null}
                         </div>
                     </div>
 

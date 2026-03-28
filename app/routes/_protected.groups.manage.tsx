@@ -19,8 +19,9 @@ import type {Group, Student} from "~/types/exam";
 
 export function clientLoader({request}: Route.ClientLoaderArgs) {
     return [
-        {id: 1, name: "第一组", students: [101, 102]},
-        {id: 2, name: "第二组", students: [103]},
+        {id: 1, name: "启航组", students: [101, 102, 103, 104, 105, 106]},
+        {id: 2, name: "卓越组", students: [107, 108, 109, 110, 111]},
+        {id: 3, name: "卓越组", students: [112, 113, 114, 115, 116, 117, 118]},
     ] as Group[];
 }
 

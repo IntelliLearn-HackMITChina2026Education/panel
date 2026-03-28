@@ -47,8 +47,7 @@ export default function Processing({loaderData}: Route.ComponentProps) {
         id: number;
         status: "processing" | "pending";
     }[]>([
-        {name: "test", id: 1, status: "processing"},
-        {name: "test", id: 2, status: "pending"},
+        {name: "物理2026学年第五次周测", id: 3, status: "processing"},
     ]);
 
     useEffect(() => {
