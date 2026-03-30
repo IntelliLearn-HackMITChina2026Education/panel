@@ -20,7 +20,11 @@ import type {Route} from "../../.react-router/types/app/routes/+types/_protected
 import {GroupsService} from "~/services/groups-service";
 
 export async function clientLoader({request}: Route.ClientLoaderArgs) {
-    const exams = await GroupsService.getExams(); // 获取考试列表用于下拉
+    const rawExams = await GroupsService.getExams();
+    const sortedExams = [...rawExams].sort((a, b) => Number(a.id) - Number(b.id));
+    const examNames = sortedExams.map(e => e.name);
+    const defaultExam = examNames.length > 0 ? examNames[examNames.length - 1] : '';
+
     const groups = await GroupsService.getGroups();
     const groupsWithTrend = await Promise.all(
         groups.map(async (group) => {
@@ -28,14 +32,14 @@ export async function clientLoader({request}: Route.ClientLoaderArgs) {
             return {...group, ...trend};
         })
     );
-    return {exams: exams.map(e => e.name), groups: groupsWithTrend};
+    return {exams: examNames, groups: groupsWithTrend, defaultExam};
 }
 
 export default function GroupsTrend({loaderData}: Route.ComponentProps) {
     const {t} = useTranslation();
     const navigate = useNavigate();
-    const {exams, groups} = loaderData;
-    const [selectedExam, setSelectedExam] = useState(exams[exams.length - 1]);
+    const {exams, groups, defaultExam} = loaderData;
+    const [selectedExam, setSelectedExam] = useState(defaultExam);
     const maxScore = 100;
 
     return (
@@ -63,7 +67,7 @@ export default function GroupsTrend({loaderData}: Route.ComponentProps) {
                             <p className="text-sm text-muted-foreground">{t('groups.trend.description')}</p>
                         </div>
                         <Select value={selectedExam} onValueChange={setSelectedExam}>
-                            <SelectTrigger className="w-50">
+                            <SelectTrigger>
                                 <SelectValue/>
                             </SelectTrigger>
                             <SelectContent>
@@ -89,16 +93,16 @@ export default function GroupsTrend({loaderData}: Route.ComponentProps) {
                                     >
                                         <div className="font-medium">{group.name}</div>
                                         <div className="flex items-center gap-4">
-                      <span>
-                        {t('groups.trend.avg_score_label')} {group.currentAvg}
-                      </span>
+                                            <span>
+                                                {t('groups.trend.avg_score_label')} {group.currentAvg}
+                                            </span>
                                             <span
                                                 className={
                                                     group.change > 0 ? "text-emerald-600" : "text-red-600"
                                                 }
                                             >
-                        {group.change > 0 ? "↑" : "↓"} {group.change}
-                      </span>
+                                                {group.change > 0 ? "↑" : "↓"} {group.change}
+                                            </span>
                                         </div>
                                     </div>
                                 ))}

@@ -26,7 +26,8 @@ import {GroupsService} from "~/services/groups-service";
 export async function clientLoader({request}: Route.ClientLoaderArgs) {
     const url = new URL(request.url);
     const exams = await GroupsService.getExams();
-    const selectedExamId = url.searchParams.get("examId") ?? (exams.length > 0 ? exams[exams.length - 1].id : "1");
+    const sortedExams = [...exams].sort((a, b) => Number(a.id) - Number(b.id));
+    const selectedExamId = url.searchParams.get("examId") ?? (sortedExams.length > 0 ? sortedExams[sortedExams.length - 1].id : "1");
     const groups = await GroupsService.getGroups();
     const groupsWithAnalysis = await Promise.all(
         groups.map(async (group) => {
